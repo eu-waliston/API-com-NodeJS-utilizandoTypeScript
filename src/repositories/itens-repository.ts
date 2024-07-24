@@ -21,7 +21,26 @@ const itensRepository = {
         const sql = 'SELECT * FROM itens WHERE id = ?'
         const params = [id]
         database.get(sql, params, (_err, row: any) => callback(row))
+    },
+
+    atualizar: (id: number, item: Item, callback: (notFound: boolean) => void) => {
+        const sql = 'UPDATE itens SET nome = ? WHERE id = ?'
+        const params =[item.nome, item.descricao, id]
+
+        database.run(sql, params, function(_err){
+            callback(this.changes === 0)
+        })
+    },
+
+    apagar: (id: number, callback: (notFound: boolean) => void) => {
+        const sql = 'DELETE FROM itens WHERE id = ?'
+        const params = [id]
+        database.run(sql, params, function(_err) {
+            callback(this.changes === 0)
+        })
     }
+
+
 }
 
 export default itensRepository

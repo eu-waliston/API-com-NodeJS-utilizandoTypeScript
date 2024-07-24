@@ -11,7 +11,7 @@ itemRouter.get("/itens", (req, res) => {
 itemRouter.get("/itens/:id", (req, res) => {
     const id: number = +req.params.id
     itensRepository.ler(id, (item) => {
-        if(item) {
+        if (item) {
             res.json(item)
         } else {
             res.status(404).send()
@@ -26,7 +26,7 @@ itemRouter.post("/itens", (req, res) => {
     //res.status(201).location(`/itens/${id}`).send() 
 
     itensRepository.criar(item, (id) => {
-        if(id) {
+        if (id) {
             res.status(201).location(`/itens/${id}`).send
         } else {
             res.status(400).send()
@@ -34,16 +34,26 @@ itemRouter.post("/itens", (req, res) => {
     })
 })
 
-//----
-
 itemRouter.put("/itens/:id", (req, res) => {
     const id: number = +req.params.id
-    res.status(204).send()
+    itensRepository.atualizar(id,req.body, (notFound) => {
+        if (notFound) {
+            res.status(404).send()
+        } else {
+            res.status(204).send()
+        }
+    })
 })
 
 itemRouter.delete("/item/:id", (req, res) => {
     const id: number = +req.params.id
-    res.status(204).send()
+    itensRepository.apagar(id, (notFound) => {
+        if(notFound) {
+            res.status(404).send()
+        } else {
+            res.status(204).send()
+        }
+    })
 })
 
 export default itemRouter
